@@ -1,7 +1,215 @@
+'use client'
+
+import { Button } from "@/components/ui/button"
+import { Form, FormField, FormItem, FormLabel, FormControl } from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+import { cn } from "@/lib/utils"
+import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover"
+import { Command, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandItem } from "@/components/ui/command"
+import { Check, ChevronsUpDown } from "lucide-react"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { z } from "zod"
+import { Textarea } from "@/components/ui/textarea"
+import Header from "@/components/Header"
+
+const tipo = [
+    { label: "English", value: "en" },
+    { label: "French", value: "fr" },
+    { label: "German", value: "de" }
+] as const
+
+const cores = [
+    { label: "preto", value: "preto" },
+    { label: "azul", value: "azul" },
+    { label: "branco", value: "branco" }
+] as const
+
+const FormSchema = z.object({
+    nome: z.string({
+        required_error: "Digite um nome para a roupa."
+    }),
+    tipo: z.string({
+        required_error: "Selecione um tipo de roupa.",
+    }),
+    cor: z.string({
+        required_error: "Selecione uma cor.",
+    }),
+    descricao: z.string()
+})
+
 export default function Cadastro() {
+    const form = useForm<z.infer<typeof FormSchema>>({
+        resolver: zodResolver(FormSchema),
+    })
+
+    function onSubmit(values: z.infer<typeof FormSchema>) {
+        // Do something with the form values.
+        // ✅ This will be type-safe and validated.
+        console.log(values)
+    }
+
     return (
         <>
-            Cadastro roupa
+            <Header />
+
+            <main className="max-w-6xl mx-auto py-8 grid grid-cols-2">
+                <Form {...form}>
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                        <FormField
+                            control={form.control}
+                            name="nome"
+                            render={({ field }) => (
+                                <FormItem>
+                                <FormLabel>Nome</FormLabel>
+                                <FormControl>
+                                    <Input placeholder="shadcn" {...field} />
+                                </FormControl>
+                                </FormItem>
+                            )}
+                        />
+
+                        <FormField
+                            control={form.control}
+                            name="tipo"
+                            render={({ field }) => (
+                                <FormItem className="flex flex-col">
+                                <FormLabel>Tipo de Roupa</FormLabel>
+                                <Popover>
+                                    <PopoverTrigger asChild>
+                                    <FormControl>
+                                        <Button
+                                        variant="outline"
+                                        role="combobox"
+                                        className={cn(
+                                            "w-[200px] justify-between",
+                                            !field.value && "text-muted-foreground"
+                                        )}
+                                        >
+                                        {field.value
+                                            ? tipo.find(
+                                                (language) => language.value === field.value
+                                            )?.label
+                                            : "Selecionar tipo"}
+                                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                        </Button>
+                                    </FormControl>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="w-[200px] p-0">
+                                    <Command>
+                                        <CommandInput placeholder="Procurar tipo..." />
+                                        <CommandList>
+                                        <CommandEmpty>No language found.</CommandEmpty>
+                                        <CommandGroup>
+                                            {tipo.map((language) => (
+                                            <CommandItem
+                                                value={language.label}
+                                                key={language.value}
+                                                onSelect={() => {
+                                                form.setValue("tipo", language.value)
+                                                }}
+                                            >
+                                                {language.label}
+                                                <Check
+                                                className={cn(
+                                                    "ml-auto",
+                                                    language.value === field.value
+                                                    ? "opacity-100"
+                                                    : "opacity-0"
+                                                )}
+                                                />
+                                            </CommandItem>
+                                            ))}
+                                        </CommandGroup>
+                                        </CommandList>
+                                    </Command>
+                                    </PopoverContent>
+                                </Popover>
+                                </FormItem>
+                            )}
+                        />
+
+                        <FormField
+                            control={form.control}
+                            name="cor"
+                            render={({ field }) => (
+                                <FormItem className="flex flex-col">
+                                <FormLabel>Tipo de Roupa</FormLabel>
+                                <Popover>
+                                    <PopoverTrigger asChild>
+                                    <FormControl>
+                                        <Button
+                                        variant="outline"
+                                        role="combobox"
+                                        className={cn(
+                                            "w-[200px] justify-between",
+                                            !field.value && "text-muted-foreground"
+                                        )}
+                                        >
+                                        {field.value
+                                            ? cores.find(
+                                                (cor) => cor.value === field.value
+                                            )?.label
+                                            : "Selecionar cor"}
+                                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                        </Button>
+                                    </FormControl>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="w-[200px] p-0">
+                                    <Command>
+                                        <CommandInput placeholder="Procurar cor..." />
+                                        <CommandList>
+                                        <CommandEmpty>No language found.</CommandEmpty>
+                                        <CommandGroup>
+                                            {cores.map((cor) => (
+                                            <CommandItem
+                                                value={cor.label}
+                                                key={cor.value}
+                                                onSelect={() => {
+                                                form.setValue("cor", cor.value)
+                                                }}
+                                            >
+                                                {cor.label}
+                                                <Check
+                                                className={cn(
+                                                    "ml-auto",
+                                                    cor.value === field.value
+                                                    ? "opacity-100"
+                                                    : "opacity-0"
+                                                )}
+                                                />
+                                            </CommandItem>
+                                            ))}
+                                        </CommandGroup>
+                                        </CommandList>
+                                    </Command>
+                                    </PopoverContent>
+                                </Popover>
+                                </FormItem>
+                            )}
+                        />
+
+                        <FormField
+                            control={form.control}
+                            name="descricao"
+                            render={({ field }) => (
+                                <FormItem>
+                                <FormLabel>Descrição</FormLabel>
+                                <FormControl>
+                                    <Textarea
+                                    placeholder="Tell us a little bit about yourself"
+                                    className="resize-none"
+                                    {...field}
+                                    />
+                                </FormControl>
+                                </FormItem>
+                            )}
+                        />
+
+                        <Button type="submit">Finalizar Cadastro</Button>
+                    </form>
+                </Form>
+            </main>
         </>
     )
 }

@@ -1,59 +1,15 @@
+import Header from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { NavigationMenu, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, navigationMenuTriggerStyle } from "@/components/ui/navigation-menu";
 import { Plus, Search } from "lucide-react"
 import Image from "next/image";
 
 export default function Home() {
   return (
     <>
-      <header>
-        <div className="flex justify-between items-center py-2 px-8 border-b">
-          <Label className="text-2xl">Guarda Roupa Virtual</Label>
-
-          <NavigationMenu>
-            <NavigationMenuList>
-              <NavigationMenuItem>
-                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                  Home
-                </NavigationMenuLink>
-              </NavigationMenuItem>
-
-              <NavigationMenuItem>
-                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                  Métricas
-                </NavigationMenuLink>
-              </NavigationMenuItem>
-
-              <NavigationMenuItem>
-                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                  Minha Conta
-                </NavigationMenuLink>
-              </NavigationMenuItem>
-
-              <NavigationMenuItem>
-                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                  Combincação
-                </NavigationMenuLink>
-              </NavigationMenuItem>
-
-              <NavigationMenuItem>
-                <Button variant={"secondary"}>
-                  Login
-                </Button>
-              </NavigationMenuItem>
-
-              <NavigationMenuItem>
-                <Button>
-                  Cadastrar
-                </Button>
-              </NavigationMenuItem>
-            </NavigationMenuList>
-          </NavigationMenu>
-        </div>
-      </header>
+      <Header />
 
       <main className="max-w-6xl mx-auto py-8">
         <div className="flex gap-4">
