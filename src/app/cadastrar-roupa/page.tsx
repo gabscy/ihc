@@ -12,6 +12,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { Textarea } from "@/components/ui/textarea"
 import Header from "@/components/Header"
+import Link from "next/link"
 
 const tipo = [
     { label: "English", value: "en" },
@@ -205,8 +206,9 @@ export default function Cadastro() {
                                 </FormItem>
                             )}
                         />
-
-                        <Button type="submit">Finalizar Cadastro</Button>
+                        <Link href={"/"}>
+                            <Button type="submit">Finalizar Cadastro</Button>
+                        </Link>
                     </form>
                 </Form>
             </main>

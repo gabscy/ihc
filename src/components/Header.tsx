@@ -1,6 +1,7 @@
 import { NavigationMenu, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, navigationMenuTriggerStyle } from "@/components/ui/navigation-menu";
 import { Label } from "@/components/ui/label";
 import { Button } from "./ui/button";
+import Link from "next/link";
 
 export default function Header() {
     return (
@@ -11,39 +12,43 @@ export default function Header() {
           <NavigationMenu>
             <NavigationMenuList>
               <NavigationMenuItem>
-                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                <NavigationMenuLink className={navigationMenuTriggerStyle()} href="/">
                   Home
                 </NavigationMenuLink>
               </NavigationMenuItem>
 
               <NavigationMenuItem>
-                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                <NavigationMenuLink className={navigationMenuTriggerStyle()} href="/metricas">
                   Métricas
                 </NavigationMenuLink>
               </NavigationMenuItem>
 
               <NavigationMenuItem>
-                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                <NavigationMenuLink className={navigationMenuTriggerStyle()} href="/minha-conta">
                   Minha Conta
                 </NavigationMenuLink>
               </NavigationMenuItem>
 
               <NavigationMenuItem>
-                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                  Combincação
+                <NavigationMenuLink className={navigationMenuTriggerStyle()} href="/combinacao">
+                  Combinação
                 </NavigationMenuLink>
               </NavigationMenuItem>
 
               <NavigationMenuItem>
-                <Button variant={"secondary"}>
-                  Login
-                </Button>
+                <Link href={"/login"}>
+                  <Button variant={"secondary"}>
+                    Login
+                  </Button>
+                </Link>
               </NavigationMenuItem>
 
               <NavigationMenuItem>
-                <Button>
-                  Cadastrar
-                </Button>
+                <Link href={"/cadastro"}>
+                  <Button>
+                    Cadastrar
+                  </Button>
+                </Link>
               </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>

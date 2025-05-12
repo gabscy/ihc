@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { NavigationMenu, NavigationMenuItem, NavigationMenuList } from "@/components/ui/navigation-menu";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 
 export default function Login() {
   return (
@@ -15,15 +16,19 @@ export default function Login() {
           <NavigationMenu>
             <NavigationMenuList>
               <NavigationMenuItem>
-                <Button variant={"secondary"}>
-                  Login
-                </Button>
+                <Link href={'/login'}>
+                  <Button variant={"secondary"}>
+                    Login
+                  </Button>
+                </Link>
               </NavigationMenuItem>
 
               <NavigationMenuItem>
-                <Button>
-                  Cadastrar
-                </Button>
+                <Link href={'/cadastro'}>
+                  <Button>
+                    Cadastrar
+                  </Button>
+                </Link>
               </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>
@@ -64,15 +69,17 @@ export default function Login() {
                       </div>
                       <Input id="password" type="password" required />
                     </div>
-                    <Button type="submit" className="w-full">
-                      Login
-                    </Button>
+                    <Link href={"/"}>
+                      <Button type="submit" className="w-full">
+                        Login
+                      </Button>
+                    </Link>
                   </div>
                   <div className="text-center text-sm">
                     Don&apos;t have an account?{" "}
-                    <a href="#" className="underline underline-offset-4">
+                    <Link href={"/cadastro"} className="underline underline-offset-4">
                       Sign up
-                    </a>
+                    </Link>
                   </div>
                 </div>
               </form>

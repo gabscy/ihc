@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Plus, Search } from "lucide-react"
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -25,12 +26,14 @@ export default function Home() {
             <Search className="pointer-events-none absolute left-2 top-1/2 size-4 -translate-y-1/2 select-none opacity-50" />
           </div>
 
-          <Button
-            className="min-w-8 bg-primary text-primary-foreground duration-200 ease-linear hover:bg-primary/90 hover:text-primary-foreground active:bg-primary/90 active:text-primary-foreground"
-          >
+          <Link href={"/cadastrar-roupa"}>
+            <Button
+              className="min-w-8 bg-primary text-primary-foreground duration-200 ease-linear hover:bg-primary/90 hover:text-primary-foreground active:bg-primary/90 active:text-primary-foreground"
+            >
             <Plus />
             <span>Cadastrar Roupa</span>
           </Button>
+          </Link>
         </div>
 
         <section className="grid grid-cols-3 pt-4"> 
