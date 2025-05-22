@@ -12,11 +12,19 @@ export default function Combinacao() {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [roupas, setRoupas] = useState<any[]>([]);
 
+    function clearCombination() {
+        localStorage.removeItem("combination");
+        setRoupas([]);
+    }
+
     useEffect(() => {
         async function fetchRoupas() {
             // Get selected roupa IDs from localStorage
             const ids = JSON.parse(localStorage.getItem("combination") || "[]");
-            if (!ids.length) return;
+            if (!ids.length) {
+                setRoupas([]);
+                return;
+            }
             const supabase = createClient();
             const { data, error } = await supabase
                 .from("roupas")
@@ -69,11 +77,16 @@ export default function Combinacao() {
             <main className="max-w-6xl mx-auto py-8">
                 <div className="flex justify-between">
                     <Label>Combinação</Label>
-                    <Button
-                        onClick={handleUsarRoupa}
-                    >
-                        Usar Roupa
-                    </Button>
+                    <div className="flex gap-2">
+                        <Button onClick={clearCombination} variant="outline">
+                            Limpar Combinação
+                        </Button>
+                        <Button
+                            onClick={handleUsarRoupa}
+                        >
+                            Usar Roupa
+                        </Button>
+                    </div>
                 </div>
 
                 <section className="grid grid-cols-3 gap-4 mt-4">

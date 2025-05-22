@@ -1,9 +1,50 @@
+'use client';
+
 import Header from "@/components/Header";
 import { Card, CardContent, CardDescription, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { ShirtIcon, WashingMachine } from "lucide-react";
+import { useEffect, useState } from "react";
+import { createClient } from "@/utils/supabase/client";
 
 export default function Metricas() {
+    const [totalRoupas, setTotalRoupas] = useState(0);
+    const [roupasUsadas, setRoupasUsadas] = useState(0);
+
+    useEffect(() => {
+        async function fetchMetrics() {
+            const supabase = createClient();
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) return;
+
+            // Count total registered clothes
+            const { count: roupasCount } = await supabase
+                .from("roupas")
+                .select("*", { count: "exact", head: true })
+                .eq("user_id", user.id);
+
+            setTotalRoupas(roupasCount || 0);
+
+            // Get all combinations for the user
+            const { data: combinacoes } = await supabase
+                .from("combinacoes")
+                .select("roupa_ids")
+                .eq("user_id", user.id);
+
+            // Count total times clothes were used in combinations
+            let totalUsos = 0;
+            if (combinacoes) {
+                combinacoes.forEach((comb) => {
+                    if (Array.isArray(comb.roupa_ids)) {
+                        totalUsos += comb.roupa_ids.length;
+                    }
+                });
+            }
+            setRoupasUsadas(totalUsos);
+        }
+        fetchMetrics();
+    }, []);
+
     return (
         <>
             <Header />
@@ -15,7 +56,7 @@ export default function Metricas() {
                     <Card>
                         <CardContent className="flex flex-col items-center">
                             <WashingMachine className="mb-2" />
-                            <CardTitle>100</CardTitle>
+                            <CardTitle>{roupasUsadas}</CardTitle>
                             <CardDescription>Roupas Usadas</CardDescription>
                         </CardContent>
                     </Card>
@@ -23,12 +64,12 @@ export default function Metricas() {
                     <Card>
                         <CardContent className="flex flex-col items-center">
                             <ShirtIcon className="mb-2" />
-                            <CardTitle>100</CardTitle>
+                            <CardTitle>{totalRoupas}</CardTitle>
                             <CardDescription>Roupas Cadastradas</CardDescription>
                         </CardContent>
                     </Card>
                 </section>
             </main>
         </>
-    )
+    );
 }
