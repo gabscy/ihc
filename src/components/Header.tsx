@@ -1,9 +1,18 @@
+'use client'
+
 import { NavigationMenu, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, navigationMenuTriggerStyle } from "@/components/ui/navigation-menu";
 import { Label } from "@/components/ui/label";
 import { Button } from "./ui/button";
-import Link from "next/link";
+import { createClient } from "@/utils/supabase/client";
 
 export default function Header() {
+  const supabase = createClient();
+
+    async function handleLogout() {
+        await supabase.auth.signOut();
+        window.location.href = "/login";
+    }
+    
     return (
         <header>
         <div className="flex justify-between items-center py-2 px-8 border-b">
@@ -36,19 +45,9 @@ export default function Header() {
               </NavigationMenuItem>
 
               <NavigationMenuItem>
-                <Link href={"/login"}>
-                  <Button variant={"secondary"}>
-                    Login
-                  </Button>
-                </Link>
-              </NavigationMenuItem>
-
-              <NavigationMenuItem>
-                <Link href={"/cadastro"}>
-                  <Button>
-                    Cadastrar
-                  </Button>
-                </Link>
+                <Button variant="destructive" onClick={handleLogout}>
+                  Logout
+                </Button>
               </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>

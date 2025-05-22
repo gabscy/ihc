@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import Link from "next/link";
 import { createClient } from "@/utils/supabase/client";
 import { NavigationMenu, NavigationMenuItem, NavigationMenuList } from "@/components/ui/navigation-menu";
@@ -14,10 +15,13 @@ import { useRouter } from "next/navigation";
 export default function Cadastro() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
+  const [age, setAge] = useState("");
+  const [gender, setGender] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
   const supabase = createClient();
   const router = useRouter();
-  
+
   const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const { data, error } = await supabase.auth.signUp({ email, password });
@@ -25,7 +29,19 @@ export default function Cadastro() {
     if (error) {
       setErrorMsg(error.message);
     } else {
-      console.log("User registered:", data);
+      // Insert into profiles table
+      const user = data.user;
+      if (user) {
+        await supabase.from("profiles").insert([
+          {
+            id: user.id,
+            email,
+            name,
+            age: age ? parseInt(age) : null,
+            gender,
+          },
+        ]);
+      }
       router.push("/");
     }
   };
@@ -80,7 +96,7 @@ export default function Cadastro() {
                     />
                   </div>
                   <div className="grid gap-2">
-                    <Label htmlFor="password">Password</Label>
+                    <Label htmlFor="password">Senha</Label>
                     <Input
                       id="password"
                       type="password"
@@ -88,6 +104,40 @@ export default function Cadastro() {
                       onChange={(e) => setPassword(e.target.value)}
                       required
                     />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="name">Nome</Label>
+                    <Input
+                      id="name"
+                      type="text"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="age">Idade</Label>
+                    <Input
+                      id="age"
+                      type="number"
+                      min="0"
+                      value={age}
+                      onChange={(e) => setAge(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="gender">Gênero</Label>
+                    <Select value={gender} onValueChange={setGender} required>
+                      <SelectTrigger id="gender">
+                        <SelectValue placeholder="Selecione o gênero" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="M">Masculino</SelectItem>
+                        <SelectItem value="F">Feminino</SelectItem>
+                        <SelectItem value="Outro">Outro</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                   {errorMsg && <p className="text-red-500">{errorMsg}</p>}
                   <Button type="submit" className="w-full">Cadastrar</Button>
