@@ -3,7 +3,7 @@ import Header from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardTitle } from "@/components/ui/card";
 import { Toggle } from "@/components/ui/toggle";
-import { ChevronLeft, Edit, Heart } from "lucide-react";
+import { ChevronLeft, Heart } from "lucide-react";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -15,6 +15,7 @@ export default function Roupa() {
     const id = searchParams.get("id"); // expects /roupa?id=xxxx
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [roupa, setRoupa] = useState<any>(null);
+    const [liked, setLiked] = useState(false);
 
     useEffect(() => {
         async function fetchRoupa() {
@@ -29,6 +30,22 @@ export default function Roupa() {
         }
         fetchRoupa();
     }, [id]);
+
+    useEffect(() => {
+        if (roupa && typeof roupa.liked === "boolean") {
+            setLiked(roupa.liked);
+        }
+    }, [roupa]);
+
+    async function handleToggleLike() {
+        const supabase = createClient();
+        const newLiked = !liked;
+        setLiked(newLiked);
+        await supabase
+            .from("roupas")
+            .update({ liked: newLiked })
+            .eq("id", roupa.id);
+    }
 
     if (!roupa) {
         return (
@@ -51,12 +68,14 @@ export default function Roupa() {
                         Voltar
                     </Button>
                     <div className="flex gap-4">
-                        <Button variant={'secondary'}>
-                            <Edit />
-                            Editar Roupa
-                        </Button>
-                        <Toggle variant={'outline'} aria-label="Toggle bold" className="rounded-full">
-                            <Heart className="h-4 w-4" />
+                        <Toggle
+                            variant={'outline'}
+                            aria-label="Toggle like"
+                            className="rounded-full"
+                            pressed={liked}
+                            onPressedChange={handleToggleLike}
+                        >
+                            <Heart className="h-4 w-4" fill={liked ? "red" : "none"} />
                         </Toggle>
                     </div>
                 </div>
