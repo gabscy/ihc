@@ -12,18 +12,19 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { Textarea } from "@/components/ui/textarea"
 import Header from "@/components/Header"
-import Link from "next/link"
+import { createClient } from "@/utils/supabase/client"
+import { useRef } from "react"
 
 const tipo = [
-    { label: "English", value: "en" },
-    { label: "French", value: "fr" },
-    { label: "German", value: "de" }
+    { label: "Calça", value: "calca" },
+    { label: "Camisa", value: "vamisa" },
+    { label: "Vestido", value: "vestido" }
 ] as const
 
 const cores = [
-    { label: "preto", value: "preto" },
-    { label: "azul", value: "azul" },
-    { label: "branco", value: "branco" }
+    { label: "Preto", value: "preto" },
+    { label: "Azul", value: "azul" },
+    { label: "Branco", value: "branco" }
 ] as const
 
 const FormSchema = z.object({
@@ -42,12 +43,57 @@ const FormSchema = z.object({
 export default function Cadastro() {
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
+        defaultValues: {
+            nome: "",
+            tipo: "",
+            cor: "",
+            descricao: "",
+        },
     })
 
-    function onSubmit(values: z.infer<typeof FormSchema>) {
-        // Do something with the form values.
-        // ✅ This will be type-safe and validated.
-        console.log(values)
+    const supabase = createClient();
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    
+    async function onSubmit(values: z.infer<typeof FormSchema>) {
+        // Get the current user
+        const { data: { user }, error: userError } = await supabase.auth.getUser();
+        if (userError || !user) {
+            alert("Usuário não autenticado.");
+            return;
+        }
+
+        // Get the file from the input
+        const file = fileInputRef.current?.files?.[0];
+        let image_url = null;
+
+        if (file) {
+            const fileExt = file.name.split('.').pop();
+            const filePath = `roupas/${user.id}/${Date.now()}.${fileExt}`;
+            const { error: uploadError } = await supabase.storage
+                .from('images') // Make sure you have a bucket named 'images'
+                .upload(filePath, file);
+
+            if (uploadError) {
+                alert("Erro ao fazer upload da imagem: " + uploadError.message);
+                return;
+            }
+            image_url = filePath;
+        }
+
+        // Insert the clothing item with user_id
+        const { data, error } = await supabase.from("roupas").insert([
+            { ...values, user_id: user.id, image_url }
+        ]).select('id').single();
+
+        if (error) {
+            alert("Erro ao cadastrar roupa: " + error.message);
+            return;
+        }
+
+        // Redirect to the roupa page with the new id
+        if (data && data.id) {
+            window.location.href = `/roupa?id=${data.id}`;
+        }
     }
 
     return (
@@ -135,7 +181,7 @@ export default function Cadastro() {
                             name="cor"
                             render={({ field }) => (
                                 <FormItem className="flex flex-col">
-                                <FormLabel>Tipo de Roupa</FormLabel>
+                                <FormLabel>Cor da Roupa</FormLabel>
                                 <Popover>
                                     <PopoverTrigger asChild>
                                     <FormControl>
@@ -206,9 +252,18 @@ export default function Cadastro() {
                                 </FormItem>
                             )}
                         />
-                        <Link href={"/"}>
-                            <Button type="submit">Finalizar Cadastro</Button>
-                        </Link>
+
+                        <FormItem>
+                            <FormLabel>Imagem da Roupa</FormLabel>
+                                <FormControl>
+                                <Input
+                                    type="file"
+                                    accept="image/*"
+                                    ref={fileInputRef}
+                                />
+                            </FormControl>
+                        </FormItem>
+                        <Button type="submit">Finalizar Cadastro</Button>
                     </form>
                 </Form>
             </main>
