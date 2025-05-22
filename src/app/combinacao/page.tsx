@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { createClient } from "@/utils/supabase/client";
+import { toast } from "sonner";
 
 export default function Combinacao() {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -40,14 +41,14 @@ export default function Combinacao() {
         // Get selected roupa IDs from localStorage
         const roupaIds = JSON.parse(localStorage.getItem("combination") || "[]");
         if (!roupaIds.length) {
-            alert("Nenhuma roupa selecionada.");
+            toast.error("Nenhuma roupa selecionada.");
             return;
         }
 
         // Get current user
         const { data: { user }, error: userError } = await supabase.auth.getUser();
         if (userError || !user) {
-            alert("Usuário não autenticado.");
+            toast.error("Usuário não autenticado.");
             return;
         }
 
@@ -60,13 +61,13 @@ export default function Combinacao() {
         ]);
 
         if (error) {
-            alert("Erro ao salvar combinação: " + error.message);
+            toast.error("Erro ao salvar combinação: " + error.message);
             return;
         }
 
         // Clear localStorage and give feedback
         localStorage.removeItem("combination");
-        alert("Combinação registrada com sucesso!");
+        toast.success("Combinação registrada com sucesso!");
         // Optionally, redirect or update UI here
     }
 

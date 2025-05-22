@@ -14,6 +14,7 @@ import { Textarea } from "@/components/ui/textarea"
 import Header from "@/components/Header"
 import { createClient } from "@/utils/supabase/client"
 import { useRef } from "react"
+import { toast } from "sonner"
 
 const tipo = [
     { label: "Calça", value: "calca" },
@@ -90,10 +91,14 @@ export default function Cadastro() {
             return;
         }
 
-        // Redirect to the roupa page with the new id
-        if (data && data.id) {
-            window.location.href = `/roupa?id=${data.id}`;
-        }
+        toast.success("Roupa cadastrada com sucesso!");
+
+        // Redirect to the roupa page with the new id after a short delay
+        setTimeout(() => {
+            if (data && data.id) {
+                window.location.href = `/roupa?id=${data.id}`;
+            }
+        }, 1200);
     }
 
     return (
