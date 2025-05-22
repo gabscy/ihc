@@ -81,7 +81,21 @@ export default function Roupa() {
                             <CardDescription className="text-md mb-2">{roupa.tipo}</CardDescription>
                             <CardDescription>{roupa.descricao}</CardDescription>
                         </div>
-                        <Button className="w-auto self-start">Adicionar Roupa</Button>
+                        <Button
+                            className="w-auto self-start"
+                            onClick={() => {
+                                // Get current combination from localStorage
+                                const current = JSON.parse(localStorage.getItem("combination") || "[]");
+                                // Add this roupa's id if not already present
+                                if (!current.includes(roupa.id)) {
+                                current.push(roupa.id);
+                                localStorage.setItem("combination", JSON.stringify(current));
+                                }
+                                alert("Roupa adicionada à combinação!");
+                            }}
+                        >
+                        Adicionar Roupa
+                        </Button>
                     </CardContent>
                 </Card>
             </main>
