@@ -13,7 +13,7 @@ import { z } from "zod"
 import { Textarea } from "@/components/ui/textarea"
 import Header from "@/components/Header"
 import { createClient } from "@/utils/supabase/client"
-import { useRef } from "react"
+import { useState, useRef } from "react"
 import { toast } from "sonner"
 
 const tipo = [
@@ -54,14 +54,17 @@ export default function Cadastro() {
 
     const supabase = createClient();
     const fileInputRef = useRef<HTMLInputElement>(null);
-    
+    const [loading, setLoading] = useState(false);
+
     async function onSubmit(values: z.infer<typeof FormSchema>) {
-        // Get the current user
+        setLoading(true);
         const { data: { user }, error: userError } = await supabase.auth.getUser();
         if (userError || !user) {
-            alert("Usuário não autenticado.");
+            toast.error("Usuário não autenticado.");
+            setLoading(false);
             return;
         }
+        toast.success("Usuário autenticado!");
 
         // Get the file from the input
         const file = fileInputRef.current?.files?.[0];
@@ -71,11 +74,12 @@ export default function Cadastro() {
             const fileExt = file.name.split('.').pop();
             const filePath = `roupas/${user.id}/${Date.now()}.${fileExt}`;
             const { error: uploadError } = await supabase.storage
-                .from('images') // Make sure you have a bucket named 'images'
+                .from('images')
                 .upload(filePath, file);
 
             if (uploadError) {
-                alert("Erro ao fazer upload da imagem: " + uploadError.message);
+                toast.error("Erro ao fazer upload da imagem: " + uploadError.message);
+                setLoading(false);
                 return;
             }
             image_url = filePath;
@@ -87,14 +91,15 @@ export default function Cadastro() {
         ]).select('id').single();
 
         if (error) {
-            alert("Erro ao cadastrar roupa: " + error.message);
+            toast.error("Erro ao cadastrar roupa: " + error.message);
+            setLoading(false);
             return;
         }
 
         toast.success("Roupa cadastrada com sucesso!");
 
-        // Redirect to the roupa page with the new id after a short delay
         setTimeout(() => {
+            setLoading(false);
             if (data && data.id) {
                 window.location.href = `/roupa?id=${data.id}`;
             }
@@ -269,7 +274,31 @@ export default function Cadastro() {
                                     />
                                 </FormControl>
                             </FormItem>
-                            <Button type="submit" className="w-full md:w-auto">Finalizar Cadastro</Button>
+                            <Button type="submit" className="w-full md:w-auto" disabled={loading}>
+                                {loading ? (
+                                    <span className="flex items-center justify-center gap-2">
+                                        <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                                            <circle
+                                                className="opacity-25"
+                                                cx="12"
+                                                cy="12"
+                                                r="10"
+                                                stroke="currentColor"
+                                                strokeWidth="4"
+                                                fill="none"
+                                            />
+                                            <path
+                                                className="opacity-75"
+                                                fill="currentColor"
+                                                d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                                            />
+                                        </svg>
+                                        Salvando...
+                                    </span>
+                                ) : (
+                                    "Finalizar Cadastro"
+                                )}
+                            </Button>
                         </form>
                     </Form>
                 </div>
