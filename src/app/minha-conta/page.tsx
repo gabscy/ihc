@@ -46,9 +46,9 @@ export default function MinhaConta() {
         <>
             <Header />
 
-            <main className="max-w-6xl mx-auto py-8 space-y-4">
-                <div className="flex items-center gap-2">
-                    <Avatar>
+            <main className="max-w-6xl mx-auto py-8 px-2 sm:px-4 space-y-6">
+                <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-8">
+                    <Avatar className="w-20 h-20">
                         <AvatarImage src={profile?.avatar_url || "https://github.com/gabscy.png"} />
                         <AvatarFallback>
                             {profile?.name
@@ -56,35 +56,34 @@ export default function MinhaConta() {
                                 : "CN"}
                         </AvatarFallback>
                     </Avatar>
-
-                    <p className="font-bold text-sm text-muted-foreground">
+                    <p className="font-bold text-lg text-muted-foreground text-center sm:text-left">
                         {profile?.name || "Nome do usuário"}
                     </p>
                 </div>
 
-                <div>
-                    <h4 className="text-sm font-medium leading-none">Email</h4>
-                    <p className="text-sm text-muted-foreground">
-                        {profile?.email || "Email do usuário"}
-                    </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <h4 className="text-sm font-medium leading-none">Email</h4>
+                        <p className="text-sm text-muted-foreground break-all">
+                            {profile?.email || "Email do usuário"}
+                        </p>
+                    </div>
+                    <div>
+                        <h4 className="text-sm font-medium leading-none">Gênero</h4>
+                        <p className="text-sm text-muted-foreground">
+                            {profile?.gender || "Gênero do usuário"}
+                        </p>
+                    </div>
+                    <div>
+                        <h4 className="text-sm font-medium leading-none">Idade</h4>
+                        <p className="text-sm text-muted-foreground">
+                            {profile?.age || "Idade do usuário"}
+                        </p>
+                    </div>
                 </div>
 
                 <div>
-                    <h4 className="text-sm font-medium leading-none">Gênero</h4>
-                    <p className="text-sm text-muted-foreground">
-                        {profile?.gender || "Gênero do usuário"}
-                    </p>
-                </div>
-
-                <div>
-                    <h4 className="text-sm font-medium leading-none">Idade</h4>
-                    <p className="text-sm text-muted-foreground">
-                        {profile?.age || "Idade do usuário"}
-                    </p>
-                </div>
-
-                <div>
-                    <Button variant="destructive" onClick={handleDeleteAccount}>
+                    <Button variant="destructive" onClick={handleDeleteAccount} className="w-full sm:w-auto">
                         Deletar Conta
                     </Button>
                 </div>

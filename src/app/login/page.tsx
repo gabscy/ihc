@@ -10,34 +10,38 @@ import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
-
+import { toast } from "sonner";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
   const supabase = createClient();
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    setLoading(true);
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
 
     if (error) {
       setErrorMsg(error.message);
+      toast.error("Erro ao fazer login: " + error.message);
+      setLoading(false);
     } else {
-      console.log("User logged in:", data);
-      router.push("/"); // Redirect after login
+      toast.success("Login realizado com sucesso!");
+      setTimeout(() => {
+        router.push("/");
+      }, 1200);
     }
   };
-
 
   return (
     <>
       <header>
-        <div className="flex justify-between items-center py-2 px-8 border-b">
+        <div className="flex justify-between items-center py-2 px-4 sm:px-8 border-b">
           <Label className="text-2xl">Guarda Roupa Virtual</Label>
-
           <NavigationMenu>
             <NavigationMenuList>
               <NavigationMenuItem>
@@ -47,7 +51,6 @@ export default function Login() {
                   </Button>
                 </Link>
               </NavigationMenuItem>
-
               <NavigationMenuItem>
                 <Link href={'/cadastro'}>
                   <Button>
@@ -60,8 +63,8 @@ export default function Login() {
         </div>
       </header>
 
-      <main className="flex min-h-svh flex-col items-center justify-center gap-6 bg-muted p-6 md:p-10">
-        <div className={cn("flex flex-col gap-6")}>
+      <main className="flex min-h-svh flex-col items-center justify-center gap-6 bg-muted p-2 sm:p-6 md:p-10">
+        <div className={cn("flex flex-col gap-6 w-full max-w-md")}>
           <Card>
             <CardHeader className="text-center">
               <CardTitle className="text-xl">Login</CardTitle>
@@ -91,11 +94,35 @@ export default function Login() {
                       required
                     />
                   </div>
-                  {errorMsg && <p className="text-red-500">{errorMsg}</p>}
-                  <Button type="submit" className="w-full">Login</Button>
+                  {errorMsg && <p className="text-red-500">Erro ao realizar login</p>}
+                  <Button type="submit" className="w-full" disabled={loading}>
+                    {loading ? (
+                      <span className="flex items-center justify-center gap-2">
+                        <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                            fill="none"
+                          />
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                          />
+                        </svg>
+                        Entrando...
+                      </span>
+                    ) : (
+                      "Login"
+                    )}
+                  </Button>
                 </div>
               </form>
-              <div className="text-center text-sm">
+              <div className="text-center text-sm mt-4">
                 Não tem uma conta?{" "}
                 <Link href="/cadastro" className="underline underline-offset-4">
                   Cadastre-se
@@ -104,10 +131,6 @@ export default function Login() {
             </CardContent>
           </Card>
 
-          <div className="text-balance text-center text-xs text-muted-foreground [&_a]:underline [&_a]:underline-offset-4 [&_a]:hover:text-primary  ">
-            By clicking continue, you agree to our <a href="#">Terms of Service</a>{" "}
-            and <a href="#">Privacy Policy</a>.
-          </div>
         </div>
       </main>
     </>

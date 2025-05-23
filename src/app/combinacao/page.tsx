@@ -75,31 +75,29 @@ export default function Combinacao() {
         <>
             <Header />
 
-            <main className="max-w-6xl mx-auto py-8">
-                <div className="flex justify-between">
-                    <Label>Combinação</Label>
+            <main className="max-w-6xl mx-auto py-8 px-2 sm:px-4">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                    <Label className="text-lg">Combinação</Label>
                     <div className="flex gap-2">
                         <Button onClick={clearCombination} variant="outline">
                             Limpar Combinação
                         </Button>
-                        <Button
-                            onClick={handleUsarRoupa}
-                        >
+                        <Button onClick={handleUsarRoupa}>
                             Usar Roupa
                         </Button>
                     </div>
                 </div>
 
-                <section className="grid grid-cols-3 gap-4 mt-4">
+                <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
                     {roupas.length === 0 ? (
-                        <p className="col-span-3 text-center text-muted-foreground pt-8">
+                        <p className="col-span-full text-center text-muted-foreground pt-8">
                             Nenhuma roupa selecionada.
                         </p>
                     ) : (
                         roupas.map((roupa) => (
                             <Card key={roupa.id}>
                                 <CardContent>
-                                    <div className="relative w-full h-[240px] mb-4">
+                                    <div className="relative w-full h-48 sm:h-56 md:h-60 mb-4">
                                         {roupa.image_url ? (
                                             <Image
                                                 alt={roupa.nome}

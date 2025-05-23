@@ -11,6 +11,7 @@ import { createClient } from "@/utils/supabase/client";
 import { NavigationMenu, NavigationMenuItem, NavigationMenuList } from "@/components/ui/navigation-menu";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export default function Cadastro() {
   const [email, setEmail] = useState("");
@@ -19,16 +20,21 @@ export default function Cadastro() {
   const [age, setAge] = useState("");
   const [gender, setGender] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
+  const [loading, setLoading] = useState(false);
   const supabase = createClient();
   const router = useRouter();
 
   const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setLoading(true);
     const { data, error } = await supabase.auth.signUp({ email, password });
 
     if (error) {
       setErrorMsg(error.message);
+      toast.error("Erro ao cadastrar: " + error.message);
+      setLoading(false);
     } else {
+      toast.success("Cadastro realizado com sucesso!");
       // Insert into profiles table
       const user = data.user;
       if (user) {
@@ -42,7 +48,10 @@ export default function Cadastro() {
           },
         ]);
       }
-      router.push("/");
+      setTimeout(() => {
+        setLoading(false);
+        router.push("/");
+      }, 1200);
     }
   };
 
@@ -74,8 +83,8 @@ export default function Cadastro() {
         </div>
       </header>
 
-      <main className="flex min-h-svh flex-col items-center justify-center gap-6 bg-muted p-6 md:p-10">
-        <div className={cn("flex flex-col gap-6")}>
+      <main className="flex min-h-svh flex-col items-center justify-center gap-6 bg-muted p-2 sm:p-6 md:p-10">
+        <div className={cn("flex flex-col gap-6 w-full max-w-md")}>
           <Card>
             <CardHeader className="text-center">
               <CardTitle className="text-xl">Cadastro</CardTitle>
@@ -139,11 +148,35 @@ export default function Cadastro() {
                       </SelectContent>
                     </Select>
                   </div>
-                  {errorMsg && <p className="text-red-500">{errorMsg}</p>}
-                  <Button type="submit" className="w-full">Cadastrar</Button>
+                  {errorMsg && <p className="text-red-500">Não foi possível realizar cadastro</p>}
+                  <Button type="submit" className="w-full" disabled={loading}>
+                    {loading ? (
+                      <span className="flex items-center justify-center gap-2">
+                        <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                            fill="none"
+                          />
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                          />
+                        </svg>
+                        Cadastrando...
+                      </span>
+                    ) : (
+                      "Cadastrar"
+                    )}
+                  </Button>
                 </div>
               </form>
-              <div className="text-center text-sm">
+              <div className="text-center text-sm mt-4">
                 Já tem uma conta?{" "}
                 <Link href="/login" className="underline underline-offset-4">
                   Faça login
@@ -151,11 +184,6 @@ export default function Cadastro() {
               </div>
             </CardContent>
           </Card>
-
-          <div className="text-balance text-center text-xs text-muted-foreground [&_a]:underline [&_a]:underline-offset-4 [&_a]:hover:text-primary  ">
-            By clicking continue, you agree to our <a href="#">Terms of Service</a>{" "}
-            and <a href="#">Privacy Policy</a>.
-          </div>
         </div>
       </main>
     </>

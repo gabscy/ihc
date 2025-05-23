@@ -61,13 +61,13 @@ export default function Roupa() {
     return (
         <>
             <Header />
-            <main className="max-w-6xl mx-auto py-8">
-                <div className="flex justify-between">
-                    <Button variant={"ghost"} onClick={() => router.back()}>
+            <main className="max-w-6xl mx-auto py-8 px-2 sm:px-4">
+                <div className="flex flex-col gap-4 sm:flex-row sm:justify-between">
+                    <Button variant={"ghost"} onClick={() => router.back()} className="w-fit">
                         <ChevronLeft />
                         Voltar
                     </Button>
-                    <div className="flex gap-4">
+                    <div className="flex gap-4 justify-end">
                         <Toggle
                             variant={'outline'}
                             aria-label="Toggle like"
@@ -79,8 +79,8 @@ export default function Roupa() {
                         </Toggle>
                     </div>
                 </div>
-                <Card className="grid grid-cols-2 gap-4 mt-4 border-none shadow-none">
-                    <div className="relative h-[300px] bg-muted">
+                <Card className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 border-none shadow-none">
+                    <div className="relative h-60 sm:h-72 md:h-[300px] bg-muted">
                         {roupa.image_url ? (
                             <Image
                                 alt="Imagem da roupa"
@@ -101,19 +101,17 @@ export default function Roupa() {
                             <CardDescription>{roupa.descricao}</CardDescription>
                         </div>
                         <Button
-                            className="w-auto self-start"
+                            className="w-full sm:w-auto self-start mt-4"
                             onClick={() => {
-                                // Get current combination from localStorage
                                 const current = JSON.parse(localStorage.getItem("combination") || "[]");
-                                // Add this roupa's id if not already present
                                 if (!current.includes(roupa.id)) {
-                                current.push(roupa.id);
-                                localStorage.setItem("combination", JSON.stringify(current));
+                                    current.push(roupa.id);
+                                    localStorage.setItem("combination", JSON.stringify(current));
                                 }
                                 alert("Roupa adicionada à combinação!");
                             }}
                         >
-                        Adicionar Roupa
+                            Adicionar Roupa
                         </Button>
                     </CardContent>
                 </Card>

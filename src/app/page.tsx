@@ -40,8 +40,8 @@ export default function Home() {
     <>
       <Header />
 
-      <main className="max-w-6xl mx-auto py-8">
-        <div className="flex gap-4">
+      <main className="max-w-6xl mx-auto py-4 px-2 sm:px-4 md:py-8">
+        <div className="flex flex-col gap-4 md:flex-row">
           <div className="relative flex-1">
             <Label htmlFor="search" className="sr-only">
               Search
@@ -58,7 +58,7 @@ export default function Home() {
 
           <Link href={"/cadastrar-roupa"}>
             <Button
-              className="min-w-8 bg-primary text-primary-foreground duration-200 ease-linear hover:bg-primary/90 hover:text-primary-foreground active:bg-primary/90 active:text-primary-foreground"
+              className="w-full md:w-auto min-w-8 bg-primary text-primary-foreground duration-200 ease-linear hover:bg-primary/90 hover:text-primary-foreground active:bg-primary/90 active:text-primary-foreground"
             >
               <Plus />
               <span>Cadastrar Roupa</span>
@@ -66,15 +66,15 @@ export default function Home() {
           </Link>
         </div>
 
-        <section className="grid grid-cols-3 pt-4 gap-4">
+        <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 pt-4 gap-4">
           {filteredRoupas.length === 0 ? (
-            <p className="col-span-3 text-center text-muted-foreground pt-8">Nenhuma roupa encontrada.</p>
+            <p className="col-span-full text-center text-muted-foreground pt-8">Nenhuma roupa encontrada.</p>
           ) : (
             filteredRoupas.map((roupa) => (
               <Card key={roupa.id}>
                 <CardContent>
                   <Link href={`/roupa?id=${roupa.id}`}>
-                    <div className="relative w-full h-[240px] mb-4">
+                    <div className="relative w-full h-48 sm:h-56 md:h-60 mb-4">
                       {roupa.image_url ? (
                         <Image
                           alt={roupa.nome}
