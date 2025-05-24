@@ -271,6 +271,7 @@ export default function Cadastro() {
                                         type="file"
                                         accept="image/*"
                                         ref={fileInputRef}
+                                        
                                     />
                                 </FormControl>
                             </FormItem>
