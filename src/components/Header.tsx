@@ -86,7 +86,7 @@ export default function Header() {
       </NavigationMenuItem>
       <NavigationMenuItem>
         <Button variant="destructive" onClick={() => setOpenLogout(true)} className="w-full">
-          Logout
+          Sair
         </Button>
       </NavigationMenuItem>
     </>
@@ -119,7 +119,7 @@ export default function Header() {
         }}
         className="w-full mt-2"
       >
-        Logout
+        Sair
       </Button>
     </>
   );

@@ -121,7 +121,7 @@ export default function Cadastro() {
                                     <FormItem>
                                         <FormLabel>Nome</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="shadcn" {...field} />
+                                            <Input placeholder="Nome da roupa" {...field} />
                                         </FormControl>
                                     </FormItem>
                                 )}
@@ -255,7 +255,7 @@ export default function Cadastro() {
                                         <FormLabel>Descrição</FormLabel>
                                         <FormControl>
                                             <Textarea
-                                                placeholder="Tell us a little bit about yourself"
+                                                placeholder="Descrição da roupa"
                                                 className="resize-none"
                                                 {...field}
                                             />

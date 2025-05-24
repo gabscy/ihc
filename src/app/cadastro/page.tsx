@@ -98,7 +98,7 @@ export default function Cadastro() {
                     <Input
                       id="email"
                       type="email"
-                      placeholder="m@example.com"
+                      placeholder="nome@email.com"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required
